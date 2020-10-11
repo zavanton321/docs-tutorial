@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 from django.urls import reverse
 
 
@@ -9,7 +8,8 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published')
 
     def get_absolute_url(self):
-        return reverse('detail', kwargs={'question_id': self.pk})
+        # demo url with namespace
+        return reverse('student:detail', kwargs={'question_id': self.pk})
 
     def __str__(self):
         return self.question_text

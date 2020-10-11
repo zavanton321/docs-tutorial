@@ -2,6 +2,9 @@ from django.urls import path
 
 from student.views import detail, index, results, vote
 
+# namespace for the url
+app_name = 'student'
+
 urlpatterns = [
     path('', index, name='index'),
     path('<int:question_id>', detail, name='detail'),
