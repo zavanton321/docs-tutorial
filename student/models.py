@@ -8,7 +8,7 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published')
 
     def get_absolute_url(self):
-        return reverse('student:detail', kwargs={'question_id': self.pk})
+        return reverse('student:detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.question_text

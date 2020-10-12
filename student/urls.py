@@ -1,12 +1,12 @@
 from django.urls import path
 
-from student.views import detail, index, results, vote
+from student.views import vote, IndexView, DetailedView, ResultsView
 
 app_name = 'student'
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('<int:question_id>', detail, name='detail'),
-    path('<int:question_id>/vote/', vote, name='vote'),
-    path('<int:question_id>/results/', results, name='results'),
+    path('', IndexView.as_view(), name='index'),
+    path('<int:pk>', DetailedView.as_view(), name='detail'),
+    path('<int:pk>/vote/', vote, name='vote'),
+    path('<int:pk>/results/', ResultsView.as_view(), name='results'),
 ]

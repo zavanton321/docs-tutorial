@@ -1,23 +1,27 @@
 from django.db.models import F
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
+from django.views.generic import ListView, DetailView
 
 from student.models import Question, Choice
 
 
-def index(request):
-    latest_questions = Question.objects.order_by('-pub_date')[:5]
-    return render(request, 'student/index.html', {'questions': latest_questions})
+class IndexView(ListView):
+    template_name = 'student/index.html'
+    context_object_name = 'questions'
+
+    def get_queryset(self):
+        return Question.objects.order_by('-pub_date')[:5]
 
 
-def detail(request, question_id):
-    return render(request, 'student/detail.html', context={
-        'question': get_object_or_404(Question, pk=question_id)
-    })
+class DetailedView(DetailView):
+    model = Question
+    template_name = 'student/detail.html'
+    context_object_name = 'question'
 
 
-def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+def vote(request, pk):
+    question = get_object_or_404(Question, pk=pk)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
@@ -26,21 +30,12 @@ def vote(request, question_id):
             'error_message': "You haven't selected any choice!"
         })
     else:
-        # race conditions here
-        # selected_choice.votes += 1
-
-        # avoid race condition (DB is responsible for updating the field)
         selected_choice.votes = F('votes') + 1
         selected_choice.save()
-
-        # full version
-        # return HttpResponseRedirect(reverse('student:results', kwargs={'question_id': question_id}))
-
-        # short version
-        return redirect(reverse('student:results', kwargs={'question_id': question_id}))
+        return redirect(reverse('student:results', kwargs={'pk': pk}))
 
 
-def results(request, question_id):
-    return render(request, 'student/results.html', context={
-        'question': get_object_or_404(Question, pk=question_id)
-    })
+class ResultsView(DetailView):
+    model = Question
+    template_name = 'student/results.html'
+    context_object_name = 'question'
