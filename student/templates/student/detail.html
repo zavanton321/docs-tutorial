@@ -8,10 +8,23 @@
 <h1>Detail</h1>
 
 <p>{{ question.question_text }}</p>
-<ol>
+
+{% if error_message %}
+    <p style="color: red">{{ error_message }}</p>
+{% endif %}
+
+<form action="{% url 'student:vote' question.pk %}" method="POST">
+    {% csrf_token %}
+
     {% for choice in question.choice_set.all %}
-        <li>{{ choice.choice_text }}</li>
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.pk }}"/>
+        <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label>
+        <br>
     {% endfor %}
-</ol>
+
+    <input type="submit" value="Vote">
+
+</form>
+
 </body>
 </html>

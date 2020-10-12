@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+</head>
+<body>
+<h1>Results</h1>
+
+<p>{{ question.question_text }}</p>
+
+<ul>
+    {% for choice in question.choice_set.all %}
+        <li>
+            {{ choice.choice_text }} - {{ choice.votes }} vote{{ choice.votes|pluralize }}
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{{ question.get_absolute_url }}">Vote again?</a>
+
+</body>
+</html>
